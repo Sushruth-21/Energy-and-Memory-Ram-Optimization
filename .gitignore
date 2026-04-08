@@ -1,0 +1,42 @@
+# Environment files
+.env
+.env.local
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.swp
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Model files (if large)
+*.zip
+*.pkl
+*.h5
+
+# Agents
+.agents/
