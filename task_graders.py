@@ -187,6 +187,70 @@ def task_3_balanced_optimization_grader(observation: EnergyOptimizationObservati
 
 
 # ============================================================================
+# TASK 4: Advanced Efficiency (Hard Level - Difficulty 4)
+# ============================================================================
+
+def task_4_advanced_efficiency_grader(observation: EnergyOptimizationObservation) -> float:
+    """
+    Grade Task 4: Advanced Efficiency
+    
+    Target: Achieve RAM below 50% and energy below 4 kWh within 25 steps.
+    """
+    ram_target = 50.0
+    energy_target = 4.0
+    max_steps = 25
+    
+    ram_baseline = 100.0
+    energy_baseline = 10.0
+    
+    ram_score = max(0.0, min(1.0, (ram_baseline - observation.ram_usage) / (ram_baseline - ram_target)))
+    energy_score = max(0.0, min(1.0, (energy_baseline - observation.energy_consumption) / (energy_baseline - energy_target)))
+    
+    balance_score = (ram_score + energy_score) / 2.0
+    
+    if observation.steps_taken <= max_steps:
+        step_bonus = min(0.1, (max_steps - observation.steps_taken) / max_steps * 0.1)
+    else:
+        step_bonus = max(-0.2, -(observation.steps_taken - max_steps) * 0.05)
+        
+    composite_score = max(0.0, min(1.0, (balance_score * 0.9) + step_bonus))
+    
+    return round(composite_score, 3)
+
+
+# ============================================================================
+# TASK 5: Expert Optimization (Master Level - Difficulty 5)
+# ============================================================================
+
+def task_5_expert_optimization_grader(observation: EnergyOptimizationObservation) -> float:
+    """
+    Grade Task 5: Expert Optimization
+    
+    Target: Master level: RAM below 40% and energy below 3 kWh within 30 steps.
+    """
+    ram_target = 40.0
+    energy_target = 3.0
+    max_steps = 30
+    
+    ram_baseline = 100.0
+    energy_baseline = 10.0
+    
+    ram_score = max(0.0, min(1.0, (ram_baseline - observation.ram_usage) / (ram_baseline - ram_target)))
+    energy_score = max(0.0, min(1.0, (energy_baseline - observation.energy_consumption) / (energy_baseline - energy_target)))
+    
+    balance_score = (ram_score * 0.6) + (energy_score * 0.4)
+    
+    if observation.steps_taken <= max_steps:
+        step_bonus = min(0.1, (max_steps - observation.steps_taken) / max_steps * 0.1)
+    else:
+        step_bonus = max(-0.3, -(observation.steps_taken - max_steps) * 0.05)
+        
+    composite_score = max(0.0, min(1.0, (balance_score * 0.9) + step_bonus))
+    
+    return round(composite_score, 3)
+
+
+# ============================================================================
 # Registry and Metadata
 # ============================================================================
 
@@ -227,6 +291,30 @@ TASK_GRADERS: Dict[str, Dict[str, Any]] = {
         "max_steps": 20,
         "category": "hard",
         "real_world_application": "Production system optimization with dual constraints"
+    },
+    "advanced_efficiency": {
+        "grader": task_4_advanced_efficiency_grader,
+        "name": "advanced_efficiency",
+        "display_name": "Advanced Efficiency",
+        "difficulty": 4,
+        "description": "Achieve RAM below 50% and energy below 4 kWh",
+        "target_ram": 50.0,
+        "target_energy": 4.0,
+        "max_steps": 25,
+        "category": "hard",
+        "real_world_application": "Highly constrained embedded systems and IoT devices"
+    },
+    "expert_optimization": {
+        "grader": task_5_expert_optimization_grader,
+        "name": "expert_optimization",
+        "display_name": "Expert Optimization",
+        "difficulty": 5,
+        "description": "Master level: RAM below 40% and energy below 3 kWh",
+        "target_ram": 40.0,
+        "target_energy": 3.0,
+        "max_steps": 30,
+        "category": "expert",
+        "real_world_application": "Mission-critical space, deep-sea probes, and highly scaled edge clusters"
     }
 }
 

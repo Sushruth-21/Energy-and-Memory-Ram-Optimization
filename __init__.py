@@ -16,6 +16,8 @@ from .task_graders import (
     task_1_basic_ram_reduction_grader,
     task_2_energy_optimization_grader,
     task_3_balanced_optimization_grader,
+    task_4_advanced_efficiency_grader,
+    task_5_expert_optimization_grader,
 )
 
 __all__ = [
@@ -30,4 +32,6 @@ __all__ = [
     "task_1_basic_ram_reduction_grader",
     "task_2_energy_optimization_grader",
     "task_3_balanced_optimization_grader",
+    "task_4_advanced_efficiency_grader",
+    "task_5_expert_optimization_grader",
 ]

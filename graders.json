@@ -3,7 +3,7 @@
   "spec_version": "1.0",
   "type": "rl-environment",
   "real_world_application": "System resource optimization for data centers, cloud infrastructure, edge computing, and IoT devices",
-  "total_graders": 3,
+  "total_graders": 5,
   "minimum_required_graders": 3,
   "validation_status": "PASS",
   "scoring_scale": "0.0 (worst performance) to 1.0 (best performance)",
@@ -112,10 +112,62 @@
           "score": 0.925
         }
       }
+    },
+    {
+      "id": "task_4_advanced_efficiency_grader",
+      "name": "advanced_efficiency",
+      "display_name": "Advanced Efficiency",
+      "difficulty": 4,
+      "category": "hard",
+      "description": "Achieve RAM below 50% and energy below 4 kWh",
+      "targets": {
+        "ram_percentage": 50.0,
+        "energy_kwh": 4.0,
+        "max_steps": 25
+      },
+      "scoring_methodology": "Balance Score (90%: RAM Score 50% + Energy Score 50%) + Step Efficiency Bonus (10%)",
+      "real_world_application": "Highly constrained embedded systems and IoT devices",
+      "score_examples": {
+        "worst_case": {
+          "ram": 100.0,
+          "energy": 10.0,
+          "steps": 50,
+          "score": 0.0
+        },
+        "target_case": {
+          "ram": 50.0,
+          "energy": 4.0,
+          "steps": 25,
+          "score": 0.9
+        }
+      }
+    },
+    {
+      "id": "task_5_expert_optimization_grader",
+      "name": "expert_optimization",
+      "display_name": "Expert Optimization",
+      "difficulty": 5,
+      "category": "expert",
+      "description": "Master level: RAM below 40% and energy below 3 kWh",
+      "targets": {
+        "ram_percentage": 40.0,
+        "energy_kwh": 3.0,
+        "max_steps": 30
+      },
+      "scoring_methodology": "Balance Score (90%: RAM Score 60% + Energy Score 40%) + Step Efficiency Bonus (10%)",
+      "real_world_application": "Mission-critical space, deep-sea probes, and highly scaled edge clusters",
+      "score_examples": {
+        "worst_case": {
+          "ram": 100.0,
+          "energy": 10.0,
+          "steps": 50,
+          "score": 0.0
+        }
+      }
     }
   ],
   "summary": {
-    "graders_count": 3,
+    "graders_count": 5,
     "min_graders_required": 3,
     "graders_detected": true,
     "different_scores_returned": true,

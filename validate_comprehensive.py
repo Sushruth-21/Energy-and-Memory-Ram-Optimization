@@ -115,10 +115,16 @@ def main():
     # ========================================================================
     # 4. TEST ALL GRADERS WITH MULTIPLE SCENARIOS
     # ========================================================================
-    print("\n[4] Testing All 3 Graders with Performance Scenarios")
+    print("\n[4] Testing All 5 Graders with Performance Scenarios")
     print("-" * 90)
     
-    all_task_names = ["basic_ram_reduction", "energy_optimization", "balanced_optimization"]
+    all_task_names = [
+        "basic_ram_reduction", 
+        "energy_optimization", 
+        "balanced_optimization",
+        "advanced_efficiency",
+        "expert_optimization"
+    ]
     
     for task_name in all_task_names:
         metadata = get_grader_metadata(task_name)
