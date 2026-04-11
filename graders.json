@@ -1,0 +1,125 @@
+{
+  "environment": "Energy & Memory RAM Optimization",
+  "spec_version": "1.0",
+  "type": "rl-environment",
+  "real_world_application": "System resource optimization for data centers, cloud infrastructure, edge computing, and IoT devices",
+  "total_graders": 3,
+  "minimum_required_graders": 3,
+  "validation_status": "PASS",
+  "scoring_scale": "0.0 (worst performance) to 1.0 (best performance)",
+  "graders": [
+    {
+      "id": "task_1_basic_ram_reduction_grader",
+      "name": "basic_ram_reduction",
+      "display_name": "Basic RAM Reduction",
+      "difficulty": 1,
+      "category": "easy",
+      "description": "Reduce RAM usage below 70%",
+      "targets": {
+        "ram_percentage": 70.0,
+        "energy_kwh": 7.5,
+        "max_steps": 10
+      },
+      "scoring_methodology": "RAM Score (40%) + Energy Score (40%) + Step Efficiency (20%)",
+      "real_world_application": "Memory optimization for resource-constrained devices, IoT, and edge computing",
+      "score_examples": {
+        "worst_case": {
+          "ram": 100.0,
+          "energy": 10.0,
+          "steps": 50,
+          "score": 0.0
+        },
+        "target_case": {
+          "ram": 70.0,
+          "energy": 7.5,
+          "steps": 10,
+          "score": 1.0
+        },
+        "excellent_case": {
+          "ram": 60.0,
+          "energy": 6.0,
+          "steps": 3,
+          "score": 1.0
+        }
+      }
+    },
+    {
+      "id": "task_2_energy_optimization_grader",
+      "name": "energy_optimization",
+      "display_name": "Energy Optimization",
+      "difficulty": 2,
+      "category": "medium",
+      "description": "Reduce energy consumption below 6 kWh while maintaining RAM below 75%",
+      "targets": {
+        "ram_percentage": 75.0,
+        "energy_kwh": 6.0,
+        "max_steps": 15
+      },
+      "scoring_methodology": "Energy Score (50%) + RAM Constraint Score (25%) + Step Efficiency (25%)",
+      "real_world_application": "Energy efficiency optimization for data centers and cloud infrastructure",
+      "score_examples": {
+        "worst_case": {
+          "ram": 100.0,
+          "energy": 10.0,
+          "steps": 50,
+          "score": 0.0
+        },
+        "target_case": {
+          "ram": 75.0,
+          "energy": 6.0,
+          "steps": 15,
+          "score": 1.0
+        },
+        "excellent_case": {
+          "ram": 65.0,
+          "energy": 5.0,
+          "steps": 10,
+          "score": 1.0
+        }
+      }
+    },
+    {
+      "id": "task_3_balanced_optimization_grader",
+      "name": "balanced_optimization",
+      "display_name": "Balanced Optimization",
+      "difficulty": 3,
+      "category": "hard",
+      "description": "Balance RAM below 60% and energy below 5 kWh",
+      "targets": {
+        "ram_percentage": 60.0,
+        "energy_kwh": 5.0,
+        "max_steps": 20
+      },
+      "scoring_methodology": "Balance Score (90%: RAM Score 50% + Energy Score 50%) + Step Efficiency Bonus (10%)",
+      "real_world_application": "Production system optimization with dual constraints on memory and energy",
+      "score_examples": {
+        "worst_case": {
+          "ram": 100.0,
+          "energy": 10.0,
+          "steps": 50,
+          "score": 0.0
+        },
+        "target_case": {
+          "ram": 60.0,
+          "energy": 5.0,
+          "steps": 20,
+          "score": 0.9
+        },
+        "excellent_case": {
+          "ram": 50.0,
+          "energy": 4.0,
+          "steps": 15,
+          "score": 0.925
+        }
+      }
+    }
+  ],
+  "summary": {
+    "graders_count": 3,
+    "min_graders_required": 3,
+    "graders_detected": true,
+    "different_scores_returned": true,
+    "real_world_application": true,
+    "validation_passed": true
+  }
+}

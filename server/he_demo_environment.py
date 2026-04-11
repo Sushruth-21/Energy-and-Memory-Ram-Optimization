@@ -19,6 +19,7 @@ from openenv.core.env_server.interfaces import Environment
 from openenv.core.env_server.types import State
 
 from he_demo.models import EnergyOptimizationAction, EnergyOptimizationObservation, Task, TaskSummary
+from he_demo.task_graders import TASK_GRADERS, get_grader, get_all_graders, get_grader_metadata
 
 
 class EnergyOptimizationEnvironment(Environment):
@@ -320,23 +321,33 @@ class EnergyOptimizationEnvironment(Environment):
     @property
     def graders(self):
         """
-        Get the task graders for this environment.
-
+        Get all task graders for this environment.
+        
         Returns:
             Dictionary mapping task names to grader functions
         """
-        from he_demo.graders import (
-            grade_basic_ram_reduction,
-            grade_energy_optimization,
-            grade_balanced_optimization,
-            grade_advanced_efficiency,
-            grade_expert_optimization,
-        )
+        return get_all_graders()
+    
+    @property
+    def grader_metadata(self):
+        """
+        Get metadata about all available graders.
         
-        return {
-            "basic_ram_reduction": grade_basic_ram_reduction,
-            "energy_optimization": grade_energy_optimization,
-            "balanced_optimization": grade_balanced_optimization,
-            "advanced_efficiency": grade_advanced_efficiency,
-            "expert_optimization": grade_expert_optimization,
-        }
+        Returns:
+            Dictionary with metadata for each task grader
+        """
+        return get_grader_metadata()
+    
+    def grade_task(self, task_name: str, observation: EnergyOptimizationObservation) -> float:
+        """
+        Grade performance on a specific task.
+        
+        Args:
+            task_name: Name of the task to grade
+            observation: Observation to grade
+            
+        Returns:
+            Score from 0.0 (worst) to 1.0 (best)
+        """
+        grader = get_grader(task_name)
+        return grader(observation)

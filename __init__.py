@@ -8,12 +8,14 @@
 
 from .client import EnergyOptimizationEnv
 from .models import EnergyOptimizationAction, EnergyOptimizationObservation, Task
-from .graders import (
-    grade_basic_ram_reduction,
-    grade_energy_optimization,
-    grade_balanced_optimization,
-    grade_advanced_efficiency,
-    grade_expert_optimization,
+from .task_graders import (
+    TASK_GRADERS,
+    get_grader,
+    get_all_graders,
+    get_grader_metadata,
+    task_1_basic_ram_reduction_grader,
+    task_2_energy_optimization_grader,
+    task_3_balanced_optimization_grader,
 )
 
 __all__ = [
@@ -21,9 +23,11 @@ __all__ = [
     "EnergyOptimizationObservation",
     "Task",
     "EnergyOptimizationEnv",
-    "grade_basic_ram_reduction",
-    "grade_energy_optimization", 
-    "grade_balanced_optimization",
-    "grade_advanced_efficiency",
-    "grade_expert_optimization",
+    "TASK_GRADERS",
+    "get_grader",
+    "get_all_graders",
+    "get_grader_metadata",
+    "task_1_basic_ram_reduction_grader",
+    "task_2_energy_optimization_grader",
+    "task_3_balanced_optimization_grader",
 ]
