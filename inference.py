@@ -23,13 +23,219 @@ import asyncio
 import os
 import subprocess
 import textwrap
-from typing import List, Optional
+from typing import List, Optional, Dict, Any, Callable
 
 from openai import OpenAI, OpenAIError
 
 from he_demo.client import EnergyOptimizationEnv
-from he_demo.models import EnergyOptimizationAction
-from he_demo.task_graders import TASK_GRADERS, get_grader, get_grader_metadata
+from he_demo.models import EnergyOptimizationAction, EnergyOptimizationObservation
+
+
+# ============================================================================
+# TASK GRADERS - Integrated from task_graders.py
+# ============================================================================
+# All grader functions for evaluating agent performance (0.0-1.0 scale)
+
+def task_1_basic_ram_reduction_grader(observation: EnergyOptimizationObservation) -> float:
+    """Grade Task 1: Basic RAM Reduction (Difficulty 1)"""
+    ram_target = 70.0
+    energy_target = 7.5
+    max_steps = 10
+    
+    ram_baseline = 100.0
+    energy_baseline = 10.0
+    
+    ram_score = max(0.0, min(1.0, (ram_baseline - observation.ram_usage) / (ram_baseline - ram_target)))
+    energy_score = max(0.0, min(1.0, (energy_baseline - observation.energy_consumption) / (energy_baseline - energy_target)))
+    
+    if observation.steps_taken <= max_steps:
+        step_efficiency = 1.0
+    else:
+        step_efficiency = max(0.0, 1.0 - (observation.steps_taken - max_steps) * 0.1)
+    
+    composite_score = (ram_score * 0.4) + (energy_score * 0.4) + (step_efficiency * 0.2)
+    return round(composite_score, 3)
+
+
+def task_2_energy_optimization_grader(observation: EnergyOptimizationObservation) -> float:
+    """Grade Task 2: Energy Optimization (Difficulty 2)"""
+    ram_constraint = 75.0
+    energy_target = 6.0
+    max_steps = 15
+    
+    energy_baseline = 10.0
+    energy_score = max(0.0, min(1.0, (energy_baseline - observation.energy_consumption) / (energy_baseline - energy_target)))
+    
+    if observation.ram_usage <= ram_constraint:
+        ram_constraint_score = 1.0
+    else:
+        overage = observation.ram_usage - ram_constraint
+        ram_constraint_score = max(0.0, 1.0 - (overage / 5.0))
+    
+    if observation.steps_taken <= max_steps:
+        step_efficiency = 1.0
+    else:
+        step_efficiency = max(0.0, 1.0 - (observation.steps_taken - max_steps) * 0.08)
+    
+    composite_score = (energy_score * 0.5) + (ram_constraint_score * 0.25) + (step_efficiency * 0.25)
+    return round(composite_score, 3)
+
+
+def task_3_balanced_optimization_grader(observation: EnergyOptimizationObservation) -> float:
+    """Grade Task 3: Balanced Optimization (Difficulty 3)"""
+    ram_target = 60.0
+    energy_target = 5.0
+    max_steps = 20
+    
+    ram_baseline = 100.0
+    energy_baseline = 10.0
+    
+    ram_score = max(0.0, min(1.0, (ram_baseline - observation.ram_usage) / (ram_baseline - ram_target)))
+    energy_score = max(0.0, min(1.0, (energy_baseline - observation.energy_consumption) / (energy_baseline - energy_target)))
+    
+    balance_score = (ram_score + energy_score) / 2.0
+    
+    if observation.steps_taken <= max_steps:
+        step_bonus = min(0.1, (max_steps - observation.steps_taken) / max_steps * 0.1)
+    else:
+        step_bonus = max(-0.2, -(observation.steps_taken - max_steps) * 0.05)
+    
+    composite_score = max(0.0, min(1.0, (balance_score * 0.9) + step_bonus))
+    return round(composite_score, 3)
+
+
+def task_4_advanced_efficiency_grader(observation: EnergyOptimizationObservation) -> float:
+    """Grade Task 4: Advanced Efficiency (Difficulty 4)"""
+    ram_target = 50.0
+    energy_target = 4.0
+    max_steps = 25
+    
+    ram_baseline = 100.0
+    energy_baseline = 10.0
+    
+    ram_score = max(0.0, min(1.0, (ram_baseline - observation.ram_usage) / (ram_baseline - ram_target)))
+    energy_score = max(0.0, min(1.0, (energy_baseline - observation.energy_consumption) / (energy_baseline - energy_target)))
+    
+    balance_score = (ram_score + energy_score) / 2.0
+    
+    if observation.steps_taken <= max_steps:
+        step_bonus = min(0.1, (max_steps - observation.steps_taken) / max_steps * 0.1)
+    else:
+        step_bonus = max(-0.2, -(observation.steps_taken - max_steps) * 0.05)
+        
+    composite_score = max(0.0, min(1.0, (balance_score * 0.9) + step_bonus))
+    return round(composite_score, 3)
+
+
+def task_5_expert_optimization_grader(observation: EnergyOptimizationObservation) -> float:
+    """Grade Task 5: Expert Optimization (Difficulty 5)"""
+    ram_target = 40.0
+    energy_target = 3.0
+    max_steps = 30
+    
+    ram_baseline = 100.0
+    energy_baseline = 10.0
+    
+    ram_score = max(0.0, min(1.0, (ram_baseline - observation.ram_usage) / (ram_baseline - ram_target)))
+    energy_score = max(0.0, min(1.0, (energy_baseline - observation.energy_consumption) / (energy_baseline - energy_target)))
+    
+    balance_score = (ram_score * 0.6) + (energy_score * 0.4)
+    
+    if observation.steps_taken <= max_steps:
+        step_bonus = min(0.1, (max_steps - observation.steps_taken) / max_steps * 0.1)
+    else:
+        step_bonus = max(-0.3, -(observation.steps_taken - max_steps) * 0.05)
+        
+    composite_score = max(0.0, min(1.0, (balance_score * 0.9) + step_bonus))
+    return round(composite_score, 3)
+
+
+# Explicit task grader mapping for validator tool detection
+TASK_GRADERS: Dict[str, Dict[str, Any]] = {
+    "basic_ram_reduction": {
+        "grader": task_1_basic_ram_reduction_grader,
+        "name": "basic_ram_reduction",
+        "display_name": "Basic RAM Reduction",
+        "difficulty": 1,
+        "description": "Reduce RAM usage below 70%",
+        "target_ram": 70.0,
+        "target_energy": 7.5,
+        "max_steps": 10,
+        "category": "easy",
+        "real_world_application": "Memory optimization for resource-constrained devices and edge computing"
+    },
+    "energy_optimization": {
+        "grader": task_2_energy_optimization_grader,
+        "name": "energy_optimization",
+        "display_name": "Energy Optimization",
+        "difficulty": 2,
+        "description": "Reduce energy consumption below 6 kWh while maintaining RAM below 75%",
+        "target_ram": 75.0,
+        "target_energy": 6.0,
+        "max_steps": 15,
+        "category": "medium",
+        "real_world_application": "Energy efficiency for data centers and cloud infrastructure"
+    },
+    "balanced_optimization": {
+        "grader": task_3_balanced_optimization_grader,
+        "name": "balanced_optimization",
+        "display_name": "Balanced Optimization",
+        "difficulty": 3,
+        "description": "Balance RAM below 60% and energy below 5 kWh",
+        "target_ram": 60.0,
+        "target_energy": 5.0,
+        "max_steps": 20,
+        "category": "hard",
+        "real_world_application": "Production system optimization with dual constraints"
+    },
+    "advanced_efficiency": {
+        "grader": task_4_advanced_efficiency_grader,
+        "name": "advanced_efficiency",
+        "display_name": "Advanced Efficiency",
+        "difficulty": 4,
+        "description": "Achieve RAM below 50% and energy below 4 kWh",
+        "target_ram": 50.0,
+        "target_energy": 4.0,
+        "max_steps": 25,
+        "category": "hard",
+        "real_world_application": "Highly constrained embedded systems and IoT devices"
+    },
+    "expert_optimization": {
+        "grader": task_5_expert_optimization_grader,
+        "name": "expert_optimization",
+        "display_name": "Expert Optimization",
+        "difficulty": 5,
+        "description": "Master level: RAM below 40% and energy below 3 kWh",
+        "target_ram": 40.0,
+        "target_energy": 3.0,
+        "max_steps": 30,
+        "category": "expert",
+        "real_world_application": "Mission-critical space, deep-sea probes, and highly scaled edge clusters"
+    }
+}
+
+
+def get_grader(task_name: str) -> Callable:
+    """Get the grader function for a specific task."""
+    if task_name not in TASK_GRADERS:
+        raise ValueError(f"Unknown task: {task_name}. Available tasks: {list(TASK_GRADERS.keys())}")
+    return TASK_GRADERS[task_name]["grader"]
+
+
+def get_all_graders() -> Dict[str, Callable]:
+    """Get all available graders."""
+    return {name: metadata["grader"] for name, metadata in TASK_GRADERS.items()}
+
+
+def get_grader_metadata(task_name: str = None) -> Dict[str, Any]:
+    """Get metadata about graders."""
+    if task_name:
+        if task_name not in TASK_GRADERS:
+            raise ValueError(f"Unknown task: {task_name}")
+        return {k: v for k, v in TASK_GRADERS[task_name].items() if k != "grader"}
+    else:
+        return {name: {k: v for k, v in metadata.items() if k != "grader"} 
+                for name, metadata in TASK_GRADERS.items()}
 
 # Environment configuration variables
 # Default endpoint uses Hugging Face's router; set API_BASE_URL explicitly if needed.
