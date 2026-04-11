@@ -172,7 +172,12 @@ class EnergyOptimizationEnvironment(Environment):
         ) * 0.5
         base_reward += efficiency_improvement
 
-        return base_reward
+        # Normalize reward to 0-1 scale for consistency with grader output
+        # Maximum raw reward ~30: task completion (difficulty * 10 = ~5-50) + efficiency + action rewards
+        # Cap at 30 to ensure normalized values stay between 0.0-1.0
+        max_reward = 30.0
+        normalized_reward = min(1.0, max(0.0, base_reward / max_reward))
+        return normalized_reward
 
     def _apply_system_dynamics(self):
         """Apply natural system dynamics and external factors."""
