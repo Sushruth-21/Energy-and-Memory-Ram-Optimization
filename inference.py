@@ -29,6 +29,7 @@ from openai import OpenAI, OpenAIError
 
 from he_demo.client import EnergyOptimizationEnv
 from he_demo.models import EnergyOptimizationAction
+from he_demo.task_graders import TASK_GRADERS, get_grader, get_grader_metadata
 
 # Environment configuration variables
 # Default endpoint uses Hugging Face's router; set API_BASE_URL explicitly if needed.
@@ -205,6 +206,23 @@ async def main() -> None:
     if not HF_TOKEN:
         raise ValueError("HF_TOKEN environment variable must be set to your Hugging Face API key")
 
+    # ===== GRADER CONFIGURATION (Per Hackathon Rules) =====
+    # Validate that the specified task has a grader configured
+    if TASK_NAME not in TASK_GRADERS:
+        available_tasks = list(TASK_GRADERS.keys())
+        raise ValueError(
+            f"Task '{TASK_NAME}' not found. Available tasks with graders: {available_tasks}. "
+            f"Set ENERGY_TASK environment variable to one of these task names."
+        )
+    
+    task_metadata = get_grader_metadata(TASK_NAME)
+    print(
+        f"[CONFIG] Task-specific grader configured: task={TASK_NAME} "
+        f"difficulty={task_metadata['difficulty']} "
+        f"description='{task_metadata['description']}'",
+        flush=True,
+    )
+
     client = OpenAI(base_url=API_BASE_URL, api_key=HF_TOKEN)
 
     async def local_image_exists(image_name: str) -> bool:
@@ -273,15 +291,43 @@ async def main() -> None:
             if done:
                 break
 
-        # Calculate final score based on tasks completed and efficiency
+        # ===== GRADER INTEGRATION (Per Hackathon Rules) =====
+        # Apply the task-specific grader to evaluate performance
+        try:
+            grader_func = get_grader(TASK_NAME)
+            grader_score = grader_func(result.observation)
+            grader_metadata = get_grader_metadata(TASK_NAME)
+        except Exception as e:
+            print(f"[DEBUG] Grader error for task {TASK_NAME}: {e}", flush=True)
+            grader_score = 0.0
+            grader_metadata = None
+
+        # Calculate final score using grader logic
+        # Grader provides task-specific evaluation (0.0-1.0)
+        score = grader_score
+
+        # Log grader details
+        if grader_metadata:
+            print(
+                f"[GRADER] task={TASK_NAME} difficulty={grader_metadata.get('difficulty', 'unknown')} "
+                f"target_ram={grader_metadata.get('target_ram', 'n/a')}% "
+                f"target_energy={grader_metadata.get('target_energy', 'n/a')}kWh "
+                f"grader_score={grader_score:.3f}",
+                flush=True,
+            )
+
+        success = score >= SUCCESS_SCORE_THRESHOLD
+
+        # Additional logging of completions and efficiency
         total_reward = sum(rewards)
         tasks_completed = len(result.observation.tasks_completed) if result.observation.tasks_completed else 0
         efficiency_score = result.observation.efficiency_score
 
-        # Score combines task completion and efficiency
-        score = (tasks_completed / 5.0) * 0.6 + (efficiency_score / 1.0) * 0.4
-        score = min(max(score, 0.0), 1.0)  # clamp to [0, 1]
-        success = score >= SUCCESS_SCORE_THRESHOLD
+        print(
+            f"[METRICS] total_reward={total_reward:.2f} tasks_completed={tasks_completed} "
+            f"efficiency_score={efficiency_score:.3f} final_grader_score={score:.3f}",
+            flush=True,
+        )
 
     finally:
         try:
