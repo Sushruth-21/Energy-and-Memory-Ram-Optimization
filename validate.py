@@ -12,24 +12,26 @@ import os
 project_root = os.path.dirname(__file__)
 sys.path.insert(0, project_root)
 
-# Mock the he_demo package
+# Mock the he_demo package FIRST before any imports
 import types
 he_demo = types.ModuleType('he_demo')
 
-# Import models and add to he_demo
+# Import models and graders and add to he_demo
 from models import EnergyOptimizationAction, EnergyOptimizationObservation, Task, TaskSummary
+from task_graders import TASK_GRADERS, get_grader_metadata, get_grader
 he_demo.EnergyOptimizationAction = EnergyOptimizationAction
 he_demo.EnergyOptimizationObservation = EnergyOptimizationObservation
 he_demo.Task = Task
 he_demo.TaskSummary = TaskSummary
+he_demo.task_graders = sys.modules.get('task_graders')
 
 # Add to sys.modules
 sys.modules['he_demo'] = he_demo
 sys.modules['he_demo.models'] = he_demo
+sys.modules['he_demo.task_graders'] = sys.modules.get('task_graders')
 
-# Now import the environment and graders
+# Now import the environment
 from server.he_demo_environment import EnergyOptimizationEnvironment
-from task_graders import TASK_GRADERS, get_grader_metadata
 
 def main():
     print("🔋 Energy & Memory RAM Optimization Environment - Final Validation")
@@ -84,7 +86,6 @@ def main():
         # ===== GRADER EVALUATION (Hackathon Requirement) =====
         print("\n[4] Grader Evaluation")
         print("-" * 70)
-        from task_graders import get_grader
         
         # Test grader on current observation
         for task_name in ["basic_ram_reduction", "energy_optimization", "balanced_optimization"]:
