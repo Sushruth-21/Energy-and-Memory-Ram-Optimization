@@ -39,6 +39,7 @@ from fastapi import FastAPI
 from he_demo.models import EnergyOptimizationAction, EnergyOptimizationObservation
 from he_demo.server.he_demo_environment import EnergyOptimizationEnvironment
 from he_demo.task_graders import get_grader_metadata, TASK_GRADERS
+from he_demo.task_registry import get_all_tasks_with_graders, get_tasks_count, is_grader_requirement_met
 
 
 # Create the app with web interface and README integration
@@ -111,6 +112,68 @@ def graders_info():
         "graders": get_grader_metadata(),
         "scoring_scale": "0.0 (worst) to 1.0 (best)",
         "real_world_application": "System resource optimization for data centers, edge computing, and mobile devices"
+    }
+
+
+# ============================================================================
+# TASK REGISTRY ENDPOINTS FOR VALIDATOR DETECTION
+# ============================================================================
+
+@app.get("/tasks")
+def get_tasks():
+    """
+    Get all available tasks with their associated graders.
+    
+    Returns:
+        Dictionary of tasks with grader assignments
+    """
+    return {
+        "tasks": get_all_tasks_with_graders(),
+        "total_tasks_with_graders": get_tasks_count(),
+        "requirement_met": is_grader_requirement_met(),
+        "minimum_required": 3
+    }
+
+
+@app.get("/tasks/{task_name}")
+def get_task_info(task_name: str):
+    """
+    Get information about a specific task and its grader.
+    
+    Args:
+        task_name: Name of the task
+        
+    Returns:
+        Task information with grader metadata
+    """
+    tasks = get_all_tasks_with_graders()
+    if task_name not in tasks:
+        return {"error": f"Task '{task_name}' not found"}
+    task_info = tasks[task_name].copy()
+    # Remove the grader function from response (not JSON serializable)
+    task_info.pop("grader", None)
+    return {
+        "task_name": task_name,
+        "task_info": task_info,
+        "grader_metadata": get_grader_metadata(task_name)
+    }
+
+
+@app.get("/validate")
+def validate_graders():
+    """
+    Validation endpoint for OpenEnv compliance checking.
+    
+    Returns:
+        Validation status indicating whether requirements are met
+    """
+    return {
+        "requirement": "At least 3 tasks with graders",
+        "total_tasks_with_graders": get_tasks_count(),
+        "validation_passed": is_grader_requirement_met(),
+        "tasks": list(get_all_tasks_with_graders().keys()),
+        "status": "PASS" if is_grader_requirement_met() else "FAIL",
+        "message": f"Environment has {get_tasks_count()} tasks with graders (minimum required: 3)"
     }
 
 

@@ -19,6 +19,13 @@ from .task_graders import (
     task_4_advanced_efficiency_grader,
     task_5_expert_optimization_grader,
 )
+from .task_registry import (
+    TASK_REGISTRY,
+    get_all_tasks_with_graders,
+    get_task_grader,
+    get_tasks_count,
+    is_grader_requirement_met,
+)
 
 __all__ = [
     "EnergyOptimizationAction",
@@ -34,4 +41,9 @@ __all__ = [
     "task_3_balanced_optimization_grader",
     "task_4_advanced_efficiency_grader",
     "task_5_expert_optimization_grader",
+    "TASK_REGISTRY",
+    "get_all_tasks_with_graders",
+    "get_task_grader",
+    "get_tasks_count",
+    "is_grader_requirement_met",
 ]
