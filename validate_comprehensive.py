@@ -11,23 +11,9 @@ import os
 project_root = os.path.dirname(__file__)
 sys.path.insert(0, project_root)
 
-# Mock the he_demo package for testing
-import types
-he_demo = types.ModuleType('he_demo')
-
-# Import models and add to he_demo
-from models import EnergyOptimizationAction, EnergyOptimizationObservation, Task, TaskSummary
-from task_graders import TASK_GRADERS, get_grader, get_grader_metadata
-he_demo.EnergyOptimizationAction = EnergyOptimizationAction
-he_demo.EnergyOptimizationObservation = EnergyOptimizationObservation
-he_demo.Task = Task
-he_demo.TaskSummary = TaskSummary
-
-# Add to sys.modules
-sys.modules['he_demo'] = he_demo
-sys.modules['he_demo.models'] = he_demo
-
-# Now import the environment
+# Import from properly structured he_demo package
+from he_demo.models import EnergyOptimizationAction, EnergyOptimizationObservation, Task, TaskSummary
+from he_demo.task_graders import TASK_GRADERS, get_grader, get_grader_metadata
 from he_demo.server.he_demo_environment import EnergyOptimizationEnvironment
 
 def create_observation(ram_usage, energy_consumption, steps_taken):
