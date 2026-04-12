@@ -13,6 +13,15 @@ returning a score from 0.0 (worst) to 1.0 (best).
 
 from models import EnergyOptimizationObservation
 
+# Explicit exports for validator discovery
+__all__ = [
+    'grade_basic_ram_reduction',
+    'grade_energy_optimization',
+    'grade_balanced_optimization',
+    'grade_advanced_efficiency',
+    'grade_expert_optimization',
+]
+
 
 def grade_basic_ram_reduction(observation: EnergyOptimizationObservation) -> float:
     """Grade performance on basic RAM reduction task: Reduce RAM usage below 70%."""
