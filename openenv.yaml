@@ -5,3 +5,29 @@ runtime: fastapi
 app: server.app:app
 port: 8000
 
+tasks:
+  - name: basic_ram_reduction
+    description: "Reduce RAM usage below 70% within 10 steps"
+    grader: task_graders:task_1_basic_ram_reduction_grader
+    max_steps: 10
+
+  - name: energy_optimization
+    description: "Reduce energy consumption below 6 kWh while keeping RAM below 75%"
+    grader: task_graders:task_2_energy_optimization_grader
+    max_steps: 15
+
+  - name: balanced_optimization
+    description: "Balance RAM below 60% and energy below 5 kWh within 20 steps"
+    grader: task_graders:task_3_balanced_optimization_grader
+    max_steps: 20
+
+  - name: advanced_efficiency
+    description: "Achieve RAM below 50% and energy below 4 kWh within 25 steps"
+    grader: task_graders:task_4_advanced_efficiency_grader
+    max_steps: 25
+
+  - name: expert_optimization
+    description: "Master level: RAM below 40% and energy below 3 kWh within 30 steps"
+    grader: task_graders:task_5_expert_optimization_grader
+    max_steps: 30
+
