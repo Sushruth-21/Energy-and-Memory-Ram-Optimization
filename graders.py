@@ -11,7 +11,7 @@ Each grader function evaluates agent performance on a specific task,
 returning a score from 0.0 (worst) to 1.0 (best).
 """
 
-from he_demo.models import EnergyOptimizationObservation
+from models import EnergyOptimizationObservation
 
 
 def grade_basic_ram_reduction(observation: EnergyOptimizationObservation) -> float:
