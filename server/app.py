@@ -40,6 +40,7 @@ from he_demo.models import EnergyOptimizationAction, EnergyOptimizationObservati
 from he_demo.server.he_demo_environment import EnergyOptimizationEnvironment
 from he_demo.task_graders import get_grader_metadata, TASK_GRADERS
 from he_demo.task_registry import get_all_tasks_with_graders, get_tasks_count, is_grader_requirement_met
+from he_demo.grader_manifest import get_graders_manifest, is_validator_satisfied
 
 
 # Create the app with web interface and README integration
@@ -48,7 +49,7 @@ app = create_app(
     EnergyOptimizationAction,
     EnergyOptimizationObservation,
     env_name="energy_optimization",
-    max_concurrent_envs=1,  # increase this number to allow more concurrent WebSocket sessions
+    max_concurrent_envs=10,  # allow multiple concurrent evaluations
 )
 
 
@@ -174,6 +175,38 @@ def validate_graders():
         "tasks": list(get_all_tasks_with_graders().keys()),
         "status": "PASS" if is_grader_requirement_met() else "FAIL",
         "message": f"Environment has {get_tasks_count()} tasks with graders (minimum required: 3)"
+    }
+
+
+@app.get("/graders/manifest")
+def get_manifest():
+    """
+    Get the graders manifest for validator tool discovery.
+    
+    Returns:
+        Explicit manifest of all available graders with metadata
+    """
+    return get_graders_manifest()
+
+
+@app.get("/graders/discovery")
+def discover_graders():
+    """
+    Grader discovery endpoint - returns minimal information for automatic detection.
+    
+    Returns:
+        Simple list of grader IDs and validation status
+    """
+    manifest = get_graders_manifest()
+    return {
+        "discovery": {
+            "grader_ids": [g["id"] for g in manifest["graders"]],
+            "grader_names": [g["name"] for g in manifest["graders"]],
+            "total_graders": manifest["validation"]["actual_count"],
+            "enabled_graders": [g["id"] for g in manifest["graders"] if g.get("enabled", True)],
+            "validator_satisfied": is_validator_satisfied(),
+            "status": "PASS" if is_validator_satisfied() else "FAIL"
+        }
     }
 
 
