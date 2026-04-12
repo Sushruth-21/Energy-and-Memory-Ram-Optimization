@@ -28,7 +28,7 @@ sys.modules['he_demo'] = he_demo
 sys.modules['he_demo.models'] = he_demo
 
 # Now import the environment
-from server.he_demo_environment import EnergyOptimizationEnvironment
+from he_demo.server.he_demo_environment import EnergyOptimizationEnvironment
 
 def create_observation(ram_usage, energy_consumption, steps_taken):
     """Helper to create observations for testing."""

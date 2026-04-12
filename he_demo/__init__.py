@@ -6,9 +6,9 @@
 
 """Energy & Memory RAM Optimization Environment."""
 
-from .client import EnergyOptimizationEnv
-from .models import EnergyOptimizationAction, EnergyOptimizationObservation, Task
-from .task_graders import (
+from he_demo.client import EnergyOptimizationEnv
+from he_demo.models import EnergyOptimizationAction, EnergyOptimizationObservation, Task
+from he_demo.task_graders import (
     TASK_GRADERS,
     get_grader,
     get_all_graders,
@@ -19,14 +19,14 @@ from .task_graders import (
     task_4_advanced_efficiency_grader,
     task_5_expert_optimization_grader,
 )
-from .task_registry import (
+from he_demo.task_registry import (
     TASK_REGISTRY,
     get_all_tasks_with_graders,
     get_task_grader,
     get_tasks_count,
     is_grader_requirement_met,
 )
-from .grader_manifest import (
+from he_demo.grader_manifest import (
     GRADERS_MANIFEST,
     get_graders_manifest,
     get_active_graders_count,

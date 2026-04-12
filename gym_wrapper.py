@@ -20,7 +20,7 @@ he_demo.TaskSummary = TaskSummary
 sys.modules['he_demo'] = he_demo
 sys.modules['he_demo.models'] = he_demo
 
-from server.he_demo_environment import EnergyOptimizationEnvironment
+from he_demo.server.he_demo_environment import EnergyOptimizationEnvironment
 
 class EnergyOptimizationGymEnv(gym.Env):
     """Gym wrapper for the Energy Optimization Environment."""

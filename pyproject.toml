@@ -42,5 +42,3 @@ server = "he_demo.server.app:main"
 [tool.setuptools]
 include-package-data = true
 packages = ["he_demo", "he_demo.server"]
-package-dir = { "he_demo" = ".", "he_demo.server" = "server" }
-py-modules = ["graders"]

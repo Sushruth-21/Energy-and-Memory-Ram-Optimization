@@ -26,7 +26,7 @@ sys.modules['he_demo'] = he_demo
 sys.modules['he_demo.models'] = he_demo
 
 # Now import the environment
-from server.he_demo_environment import EnergyOptimizationEnvironment
+from he_demo.server.he_demo_environment import EnergyOptimizationEnvironment
 
 def test_environment():
     """Test the energy optimization environment."""

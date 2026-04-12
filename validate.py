@@ -31,7 +31,7 @@ sys.modules['he_demo.models'] = he_demo
 sys.modules['he_demo.task_graders'] = sys.modules.get('task_graders')
 
 # Now import the environment
-from server.he_demo_environment import EnergyOptimizationEnvironment
+from he_demo.server.he_demo_environment import EnergyOptimizationEnvironment
 
 def main():
     print("🔋 Energy & Memory RAM Optimization Environment - Final Validation")
