@@ -72,7 +72,10 @@ def task_1_basic_ram_reduction_grader(observation: EnergyOptimizationObservation
     # Combined score: 40% RAM, 40% Energy, 20% Step Efficiency
     composite_score = (ram_score * 0.4) + (energy_score * 0.4) + (step_efficiency * 0.2)
     
-    return round(composite_score, 3)
+    # Clamp strictly between 0 and 1 (not including endpoints)
+    # Validator requires 0 < score < 1
+    clamped_score = max(0.001, min(0.999, composite_score))
+    return round(clamped_score, 3)
 
 
 # ============================================================================
@@ -129,7 +132,9 @@ def task_2_energy_optimization_grader(observation: EnergyOptimizationObservation
     # Combined: Energy (50%), RAM Constraint (25%), Step Efficiency (25%)
     composite_score = (energy_score * 0.5) + (ram_constraint_score * 0.25) + (step_efficiency * 0.25)
     
-    return round(composite_score, 3)
+    # Clamp strictly between 0 and 1 (not including endpoints)
+    clamped_score = max(0.001, min(0.999, composite_score))
+    return round(clamped_score, 3)
 
 
 # ============================================================================
@@ -181,9 +186,11 @@ def task_3_balanced_optimization_grader(observation: EnergyOptimizationObservati
         step_bonus = max(-0.2, -(observation.steps_taken - max_steps) * 0.05)  # Up to -20% penalty
     
     # Combined: Balance (90%) + Step Bonus (10%)
-    composite_score = max(0.0, min(1.0, (balance_score * 0.9) + step_bonus))
+    composite_score = (balance_score * 0.9) + step_bonus
     
-    return round(composite_score, 3)
+    # Clamp strictly between 0 and 1 (not including endpoints)
+    clamped_score = max(0.001, min(0.999, composite_score))
+    return round(clamped_score, 3)
 
 
 # ============================================================================
@@ -213,9 +220,11 @@ def task_4_advanced_efficiency_grader(observation: EnergyOptimizationObservation
     else:
         step_bonus = max(-0.2, -(observation.steps_taken - max_steps) * 0.05)
         
-    composite_score = max(0.0, min(1.0, (balance_score * 0.9) + step_bonus))
+    composite_score = (balance_score * 0.9) + step_bonus
     
-    return round(composite_score, 3)
+    # Clamp strictly between 0 and 1 (not including endpoints)
+    clamped_score = max(0.001, min(0.999, composite_score))
+    return round(clamped_score, 3)
 
 
 # ============================================================================
@@ -245,9 +254,11 @@ def task_5_expert_optimization_grader(observation: EnergyOptimizationObservation
     else:
         step_bonus = max(-0.3, -(observation.steps_taken - max_steps) * 0.05)
         
-    composite_score = max(0.0, min(1.0, (balance_score * 0.9) + step_bonus))
+    composite_score = (balance_score * 0.9) + step_bonus
     
-    return round(composite_score, 3)
+    # Clamp strictly between 0 and 1 (not including endpoints)
+    clamped_score = max(0.001, min(0.999, composite_score))
+    return round(clamped_score, 3)
 
 
 # ============================================================================
