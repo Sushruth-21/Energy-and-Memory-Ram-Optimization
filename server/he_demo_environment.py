@@ -113,85 +113,59 @@ class EnergyOptimizationEnvironment(Environment):
         return self.tasks[self.current_task_index]
 
     def _calculate_reward(self, action: EnergyOptimizationAction) -> float:
-        """Calculate reward based on action effectiveness and task progress."""
-        base_reward = 0.0
+        """
+        Calculate reward based on action intensity - FAIR & UNBIASED (like echo environment).
+        Reward is proportional to effort (intensity): reward = intensity * 0.1
+        
+        No percentage-based bias, no random noise, no penalties.
+        Linear and transparent.
+        """
+        # Base reward: proportional to action intensity (like message length in echo)
+        # reward = len(message) * 0.1 → reward = intensity * 0.1
+        base_reward = action.intensity * 0.1
 
-        # Action effectiveness rewards
+        # Direct, linear action effect (no bias based on current values)
         if action.action_type == "reduce_ram":
-            ram_reduction = min(5.0 * action.intensity, self.ram_usage * 0.1)
+            # Linear reduction: intensity directly translates to RAM reduction
+            ram_reduction = 10.0 * action.intensity  # Intensity 0.5 = 5% RAM reduction
             self.ram_usage = max(0.0, self.ram_usage - ram_reduction)
-            base_reward += ram_reduction * 0.5  # Reward for RAM reduction
-
-            # Penalty for excessive RAM reduction (system instability)
-            if action.intensity > 0.8:
-                base_reward -= 2.0
 
         elif action.action_type == "optimize_energy":
-            energy_reduction = min(1.0 * action.intensity, self.energy_consumption * 0.15)
+            # Linear reduction: intensity directly translates to energy reduction
+            energy_reduction = 2.0 * action.intensity  # Intensity 0.5 = 1.0 kWh reduction
             self.energy_consumption = max(0.0, self.energy_consumption - energy_reduction)
-            base_reward += energy_reduction * 2.0  # Higher reward for energy savings
-
-            # Penalty for aggressive energy optimization (performance impact)
-            if action.intensity > 0.9:
-                self.system_load = min(1.0, self.system_load + 0.1)
-                base_reward -= 1.0
 
         elif action.action_type == "balance_resources":
-            # Balanced approach: moderate improvements to both
-            ram_reduction = min(2.0 * action.intensity, self.ram_usage * 0.05)
-            energy_reduction = min(0.5 * action.intensity, self.energy_consumption * 0.1)
+            # Linear reduction for both resources
+            ram_reduction = 5.0 * action.intensity  # Intensity 0.5 = 2.5% RAM reduction
+            energy_reduction = 1.0 * action.intensity  # Intensity 0.5 = 0.5 kWh reduction
 
             self.ram_usage = max(0.0, self.ram_usage - ram_reduction)
             self.energy_consumption = max(0.0, self.energy_consumption - energy_reduction)
 
-            base_reward += (ram_reduction * 0.3 + energy_reduction * 1.5)
-
         elif action.action_type == "monitor_system":
-            # Monitoring action: small reward for gathering information
-            base_reward += 0.1
-            # Slight natural system load reduction from monitoring
-            self.system_load = max(0.0, self.system_load - 0.02)
+            # Monitor action: baseline reward from intensity
+            pass  # No additional state changes
 
-        # Natural system changes (simulate real system behavior)
-        self._apply_system_dynamics()
-
-        # Task completion bonus
+        # Task completion bonus (straightforward)
         current_task = self._get_current_task()
         if not current_task.completed and current_task.check_completion(
             self.ram_usage, self.energy_consumption, self._state.step_count
         ):
             current_task.completed = True
             self.tasks_completed.append(current_task.name)
-            base_reward += current_task.difficulty * 10.0  # Bonus for task completion
+            base_reward += current_task.difficulty * 0.5  # Small bonus for completion
             self.current_task_index += 1  # Move to next task
 
-        # Efficiency bonus
-        efficiency_improvement = (
-            (self.baseline_ram - self.ram_usage) / self.baseline_ram +
-            (self.baseline_energy - self.energy_consumption) / self.baseline_energy
-        ) * 0.5
-        base_reward += efficiency_improvement
-
-        # Normalize reward to 0-1 scale for consistency with grader output
-        # Maximum raw reward ~30: task completion (difficulty * 10 = ~5-50) + efficiency + action rewards
-        # Cap at 30 to ensure normalized values stay between 0.0-1.0
-        max_reward = 30.0
-        normalized_reward = min(1.0, max(0.0, base_reward / max_reward))
+        # Clamp reward to 0-1 range (consistent with grader output)
+        normalized_reward = min(1.0, max(0.0, base_reward))
         return normalized_reward
 
     def _apply_system_dynamics(self):
-        """Apply natural system dynamics and external factors."""
-        # Random external load changes
-        if random.random() < 0.1:  # 10% chance each step
-            load_change = random.uniform(-0.05, 0.05)
-            self.system_load = max(0.0, min(1.0, self.system_load + load_change))
-
-            # Load affects RAM and energy
-            ram_impact = load_change * 10.0
-            energy_impact = load_change * 0.5
-
-            self.ram_usage = max(0.0, min(100.0, self.ram_usage + ram_impact))
-            self.energy_consumption = max(0.0, self.energy_consumption + energy_impact)
+        """Apply natural system dynamics - DISABLED to avoid bias."""
+        # Removed random external load changes to maintain fair, unbiased environment
+        # Just like echo environment - no randomness, no hidden factors
+        pass
 
     def _calculate_task_progress(self) -> float:
         """Calculate progress towards current task completion."""
