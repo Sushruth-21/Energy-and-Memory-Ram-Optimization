@@ -23,12 +23,37 @@ import asyncio
 import os
 import subprocess
 import textwrap
-from typing import List, Optional, Dict, Any, Callable
+from typing import List, Optional, Dict, Any, Callable, TYPE_CHECKING
 
-from openai import OpenAI, OpenAIError
+# TYPE_CHECKING for type hints without runtime imports
+if TYPE_CHECKING:
+    from openai import OpenAI
+
+# Lazy imports - Only imported when needed to avoid hanging on startup
+# from openai import OpenAI, OpenAIError
 
 from he_demo.client import EnergyOptimizationEnv
 from he_demo.models import EnergyOptimizationAction, EnergyOptimizationObservation
+
+
+# Lazy OpenAI client initialization
+def _get_openai_client() -> "OpenAI":
+    """Lazy-load OpenAI client to avoid hanging on module import."""
+    try:
+        from openai import OpenAI
+        return OpenAI()
+    except ImportError:
+        raise ImportError("OpenAI library not installed. Install with: uv add openai")
+
+
+# Lazy OpenAIError import
+def _get_openai_error_class():
+    """Get OpenAIError class for exception handling."""
+    try:
+        from openai import OpenAIError
+        return OpenAIError
+    except ImportError:
+        return Exception  # Fallback
 
 
 # ============================================================================
@@ -371,10 +396,11 @@ def parse_action(action_str: str) -> EnergyOptimizationAction:
 
 
 def get_model_action(
-    client: OpenAI, step: int, observation, last_reward: float, history: List[str]
+    client: "OpenAI", step: int, observation, last_reward: float, history: List[str]
 ) -> EnergyOptimizationAction:
     """Get optimization action from the language model."""
     user_prompt = build_user_prompt(step, observation, last_reward, history)
+    OpenAIError = _get_openai_error_class()
     try:
         completion = client.chat.completions.create(
             model=MODEL_NAME,
@@ -434,7 +460,12 @@ async def main() -> None:
         flush=True,
     )
 
-    client = OpenAI(base_url=API_BASE_URL, api_key=HF_TOKEN)
+    # Initialize OpenAI client with lazy loading
+    try:
+        from openai import OpenAI
+        client = OpenAI(base_url=API_BASE_URL, api_key=HF_TOKEN)
+    except ImportError:
+        raise ImportError("OpenAI library not installed. Install with: uv add openai")
 
     async def local_image_exists(image_name: str) -> bool:
         try:
