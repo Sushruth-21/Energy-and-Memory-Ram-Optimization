@@ -34,13 +34,7 @@ dev = [
     "pytest-cov>=4.0.0",
 ]
 
-[project.scripts]
-# Server entry point - enables running via: uv run --project . server
-# or: python -m he_demo.server.app
-server = "he_demo.server.app:main"
-
 [tool.setuptools]
 include-package-data = true
-package-dir = {"he_demo" = "."}
 py-modules = ["models", "client", "task_graders", "task_registry", "grader_manifest"]
 packages = ["server"]
