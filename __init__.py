@@ -33,6 +33,14 @@ from grader_manifest import (
     get_grader_names,
     is_validator_satisfied,
 )
+from grader_discovery import (
+    GRADER_DISCOVERY,
+    get_grader_discovery,
+    get_graders_count,
+    is_requirement_met,
+    get_all_grader_references,
+    verify_all_graders_callable,
+)
 
 __all__ = [
     "EnergyOptimizationAction",
@@ -58,4 +66,10 @@ __all__ = [
     "get_active_graders_count",
     "get_grader_names",
     "is_validator_satisfied",
+    "GRADER_DISCOVERY",
+    "get_grader_discovery",
+    "get_graders_count",
+    "is_requirement_met",
+    "get_all_grader_references",
+    "verify_all_graders_callable",
 ]
