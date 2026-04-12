@@ -23,9 +23,9 @@ os.environ.setdefault("MODEL_NAME", "Qwen/Qwen2.5-72B-Instruct")
 os.environ.setdefault("LOCAL_SERVER_URL", "http://localhost:8000")
 
 # Import after setting environment variables
-from he_demo.client import EnergyOptimizationEnv
-from he_demo.models import EnergyOptimizationAction, EnergyOptimizationObservation
-from he_demo.task_graders import get_grader, get_grader_metadata, TASK_GRADERS
+from client import EnergyOptimizationEnv
+from models import EnergyOptimizationAction, EnergyOptimizationObservation
+from task_graders import get_grader, get_grader_metadata, TASK_GRADERS
 
 print("=" * 80)
 print("LLM INFERENCE EVALUATION SCRIPT")

@@ -41,4 +41,6 @@ server = "he_demo.server.app:main"
 
 [tool.setuptools]
 include-package-data = true
-packages = ["he_demo", "he_demo.server"]
+package-dir = {"he_demo" = "."}
+py-modules = ["models", "client", "task_graders", "task_registry", "grader_manifest"]
+packages = ["server"]

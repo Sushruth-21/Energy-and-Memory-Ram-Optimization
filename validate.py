@@ -5,10 +5,10 @@ Final validation script for the Energy & Memory RAM Optimization Environment.
 Per hackathon requirements, this validation includes grader configuration verification.
 """
 
-# Import from properly structured he_demo package
-from he_demo.models import EnergyOptimizationAction, EnergyOptimizationObservation, Task, TaskSummary
-from he_demo.task_graders import TASK_GRADERS, get_grader_metadata, get_grader
-from he_demo.server.he_demo_environment import EnergyOptimizationEnvironment
+# Import models and graders from root level
+from models import EnergyOptimizationAction, EnergyOptimizationObservation, Task, TaskSummary
+from task_graders import TASK_GRADERS, get_grader_metadata, get_grader
+from server.he_demo_environment import EnergyOptimizationEnvironment
 
 def main():
     print("🔋 Energy & Memory RAM Optimization Environment - Final Validation")

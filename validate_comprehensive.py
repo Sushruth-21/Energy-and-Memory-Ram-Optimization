@@ -11,10 +11,10 @@ import os
 project_root = os.path.dirname(__file__)
 sys.path.insert(0, project_root)
 
-# Import from properly structured he_demo package
-from he_demo.models import EnergyOptimizationAction, EnergyOptimizationObservation, Task, TaskSummary
-from he_demo.task_graders import TASK_GRADERS, get_grader, get_grader_metadata
-from he_demo.server.he_demo_environment import EnergyOptimizationEnvironment
+# Import models and graders from root level
+from models import EnergyOptimizationAction, EnergyOptimizationObservation, Task, TaskSummary
+from task_graders import TASK_GRADERS, get_grader, get_grader_metadata
+from server.he_demo_environment import EnergyOptimizationEnvironment
 
 def create_observation(ram_usage, energy_consumption, steps_taken):
     """Helper to create observations for testing."""

@@ -35,12 +35,17 @@ except Exception as e:  # pragma: no cover
         "openenv is required for the web interface. Install dependencies with '\n    uv sync\n'"
     ) from e
 
+import sys
+import os
+# Add parent directory to path so we can import root-level modules
+sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+
 from fastapi import FastAPI
-from he_demo.models import EnergyOptimizationAction, EnergyOptimizationObservation
-from he_demo.server.he_demo_environment import EnergyOptimizationEnvironment
-from he_demo.task_graders import get_grader_metadata, TASK_GRADERS
-from he_demo.task_registry import get_all_tasks_with_graders, get_tasks_count, is_grader_requirement_met
-from he_demo.grader_manifest import get_graders_manifest, is_validator_satisfied
+from models import EnergyOptimizationAction, EnergyOptimizationObservation
+from .he_demo_environment import EnergyOptimizationEnvironment
+from task_graders import get_grader_metadata, TASK_GRADERS
+from task_registry import get_all_tasks_with_graders, get_tasks_count, is_grader_requirement_met
+from grader_manifest import get_graders_manifest, is_validator_satisfied
 
 
 # Create the app with web interface and README integration

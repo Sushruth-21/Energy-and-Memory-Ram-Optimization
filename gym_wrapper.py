@@ -9,18 +9,9 @@ import gymnasium as gym
 import numpy as np
 sys.path.insert(0, os.path.dirname(__file__))
 
-# Mock the he_demo package
-import types
-he_demo = types.ModuleType('he_demo')
+# Import from root level modules
 from models import EnergyOptimizationAction, EnergyOptimizationObservation, Task, TaskSummary
-he_demo.EnergyOptimizationAction = EnergyOptimizationAction
-he_demo.EnergyOptimizationObservation = EnergyOptimizationObservation
-he_demo.Task = Task
-he_demo.TaskSummary = TaskSummary
-sys.modules['he_demo'] = he_demo
-sys.modules['he_demo.models'] = he_demo
-
-from he_demo.server.he_demo_environment import EnergyOptimizationEnvironment
+from server.he_demo_environment import EnergyOptimizationEnvironment
 
 class EnergyOptimizationGymEnv(gym.Env):
     """Gym wrapper for the Energy Optimization Environment."""

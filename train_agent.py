@@ -10,17 +10,8 @@ import sys
 import os
 sys.path.insert(0, os.path.dirname(__file__))
 
-# Mock the he_demo package for direct testing
-import types
-he_demo = types.ModuleType('he_demo')
+# Import from root level modules
 from models import EnergyOptimizationAction, EnergyOptimizationObservation, Task, TaskSummary
-he_demo.EnergyOptimizationAction = EnergyOptimizationAction
-he_demo.EnergyOptimizationObservation = EnergyOptimizationObservation
-he_demo.Task = Task
-he_demo.TaskSummary = TaskSummary
-sys.modules['he_demo'] = he_demo
-sys.modules['he_demo.models'] = he_demo
-
 from gym_wrapper import EnergyOptimizationGymEnv
 from task_graders import TASK_GRADERS, get_grader_metadata
 from stable_baselines3 import PPO

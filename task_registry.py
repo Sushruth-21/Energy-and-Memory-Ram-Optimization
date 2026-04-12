@@ -6,7 +6,7 @@ for easy discovery and validation.
 """
 
 from typing import Dict, Callable, Any
-from he_demo.task_graders import (
+from task_graders import (
     task_1_basic_ram_reduction_grader,
     task_2_energy_optimization_grader,
     task_3_balanced_optimization_grader,
