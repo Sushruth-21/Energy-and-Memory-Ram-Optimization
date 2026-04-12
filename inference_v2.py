@@ -27,8 +27,8 @@ from dataclasses import dataclass, asdict
 from datetime import datetime
 import statistics
 
-from he_demo.client import EnergyOptimizationEnv
-from he_demo.models import EnergyOptimizationObservation, EnergyOptimizationAction
+from client import EnergyOptimizationEnv
+from models import EnergyOptimizationObservation, EnergyOptimizationAction
 
 
 # ============================================================================

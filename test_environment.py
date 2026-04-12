@@ -10,23 +10,9 @@ import os
 project_root = os.path.dirname(__file__)
 sys.path.insert(0, project_root)
 
-# Mock the he_demo package for testing
-import types
-he_demo = types.ModuleType('he_demo')
-
-# Import models and add to he_demo
+# Import from root level modules
 from models import EnergyOptimizationAction, EnergyOptimizationObservation, Task, TaskSummary
-he_demo.EnergyOptimizationAction = EnergyOptimizationAction
-he_demo.EnergyOptimizationObservation = EnergyOptimizationObservation
-he_demo.Task = Task
-he_demo.TaskSummary = TaskSummary
-
-# Add to sys.modules
-sys.modules['he_demo'] = he_demo
-sys.modules['he_demo.models'] = he_demo
-
-# Now import the environment
-from he_demo.server.he_demo_environment import EnergyOptimizationEnvironment
+from server.he_demo_environment import EnergyOptimizationEnvironment
 
 def test_environment():
     """Test the energy optimization environment."""

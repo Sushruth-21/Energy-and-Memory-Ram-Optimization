@@ -32,8 +32,8 @@ if TYPE_CHECKING:
 # Lazy imports - Only imported when needed to avoid hanging on startup
 # from openai import OpenAI, OpenAIError
 
-from he_demo.client import EnergyOptimizationEnv
-from he_demo.models import EnergyOptimizationAction, EnergyOptimizationObservation
+from client import EnergyOptimizationEnv
+from models import EnergyOptimizationAction, EnergyOptimizationObservation
 
 
 # Lazy OpenAI client initialization

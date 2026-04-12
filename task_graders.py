@@ -18,7 +18,7 @@ The graders are exposed through the TASK_GRADERS registry for easy discovery.
 """
 
 from typing import Callable, Dict, Any
-from he_demo.models import EnergyOptimizationObservation
+from models import EnergyOptimizationObservation
 
 
 # ============================================================================

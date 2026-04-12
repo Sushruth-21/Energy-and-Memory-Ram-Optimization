@@ -14,12 +14,17 @@ RAM usage and energy consumption through various optimization strategies.
 import random
 from typing import List
 from uuid import uuid4
+import sys
+import os
+
+# Add parent directory to path so we can import root-level modules
+sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from openenv.core.env_server.interfaces import Environment
 from openenv.core.env_server.types import State
 
-from he_demo.models import EnergyOptimizationAction, EnergyOptimizationObservation, Task, TaskSummary
-from he_demo.task_graders import TASK_GRADERS, get_grader, get_all_graders, get_grader_metadata
+from models import EnergyOptimizationAction, EnergyOptimizationObservation, Task, TaskSummary
+from task_graders import TASK_GRADERS, get_grader, get_all_graders, get_grader_metadata
 
 
 class EnergyOptimizationEnvironment(Environment):
