@@ -34,6 +34,9 @@ dev = [
     "pytest-cov>=4.0.0",
 ]
 
+[project.scripts]
+server = "server.app:app"
+
 [tool.setuptools]
 include-package-data = true
 py-modules = ["models", "client", "task_graders", "task_registry", "grader_manifest"]
