@@ -68,8 +68,8 @@ COPY --from=builder /app/env /app/env
 # Set PATH to use the virtual environment
 ENV PATH="/app/.venv/bin:$PATH"
 
-# Set PYTHONPATH so imports work correctly
-ENV PYTHONPATH="/app:$PYTHONPATH"
+# Set PYTHONPATH so imports work correctly (both /app for compatibility and /app/env for grader discovery)
+ENV PYTHONPATH="/app/env:/app:$PYTHONPATH"
 
 ENV ENABLE_WEB_INTERFACE=true
 
