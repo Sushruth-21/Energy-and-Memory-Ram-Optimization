@@ -21,6 +21,20 @@ from typing import Callable, Dict, Any
 from models import EnergyOptimizationObservation
 
 
+# Explicit exports for validator tool discovery
+__all__ = [
+    'task_1_basic_ram_reduction_grader',
+    'task_2_energy_optimization_grader',
+    'task_3_balanced_optimization_grader',
+    'task_4_advanced_efficiency_grader',
+    'task_5_expert_optimization_grader',
+    'TASK_GRADERS',
+    'get_grader',
+    'get_all_graders',
+    'get_grader_metadata',
+]
+
+
 # ============================================================================
 # TASK 1: Basic RAM Reduction (Easy Level - Difficulty 1)
 # ============================================================================
