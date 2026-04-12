@@ -5,32 +5,9 @@ Final validation script for the Energy & Memory RAM Optimization Environment.
 Per hackathon requirements, this validation includes grader configuration verification.
 """
 
-import sys
-import os
-
-# Add the project root to Python path
-project_root = os.path.dirname(__file__)
-sys.path.insert(0, project_root)
-
-# Mock the he_demo package FIRST before any imports
-import types
-he_demo = types.ModuleType('he_demo')
-
-# Import models and graders and add to he_demo
-from models import EnergyOptimizationAction, EnergyOptimizationObservation, Task, TaskSummary
-from task_graders import TASK_GRADERS, get_grader_metadata, get_grader
-he_demo.EnergyOptimizationAction = EnergyOptimizationAction
-he_demo.EnergyOptimizationObservation = EnergyOptimizationObservation
-he_demo.Task = Task
-he_demo.TaskSummary = TaskSummary
-he_demo.task_graders = sys.modules.get('task_graders')
-
-# Add to sys.modules
-sys.modules['he_demo'] = he_demo
-sys.modules['he_demo.models'] = he_demo
-sys.modules['he_demo.task_graders'] = sys.modules.get('task_graders')
-
-# Now import the environment
+# Import from properly structured he_demo package
+from he_demo.models import EnergyOptimizationAction, EnergyOptimizationObservation, Task, TaskSummary
+from he_demo.task_graders import TASK_GRADERS, get_grader_metadata, get_grader
 from he_demo.server.he_demo_environment import EnergyOptimizationEnvironment
 
 def main():
