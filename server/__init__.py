@@ -7,6 +7,6 @@
 """Energy & Memory RAM Optimization environment server components."""
 
 from .he_demo_environment import EnergyOptimizationEnvironment
-from .app import app
+from .app import app, main
 
-__all__ = ["EnergyOptimizationEnvironment", "app"]
+__all__ = ["EnergyOptimizationEnvironment", "app", "main"]
