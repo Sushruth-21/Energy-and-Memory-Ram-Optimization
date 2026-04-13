@@ -39,5 +39,5 @@ server = "server.app:main"
 
 [tool.setuptools]
 include-package-data = true
-py-modules = ["models", "client", "task_graders", "task_registry", "grader_manifest"]
+py-modules = ["models", "client", "graders", "task_graders", "task_registry", "grader_manifest", "grader_discovery", "graders_manifest"]
 packages = ["server"]
